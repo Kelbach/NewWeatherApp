@@ -22,8 +22,7 @@ export const ForecastTable = () => {
             <tbody>
                 <tr>
                     {/* number of content columns */}
-                    <td>{forecast.daily[0].temp.day}</td><td>{new Date().toString('en-US', { timeZone: 'America/Detroit' }).split('.')[0]}</td>
-                    {/*1970????*/}
+                    <td>{forecast.daily[0].temp.day}</td>
                     <td>{forecast.daily[1].temp.day}</td>
                     <td>{forecast.daily[2].temp.day}</td>
                     <td>{forecast.daily[3].temp.day}</td>

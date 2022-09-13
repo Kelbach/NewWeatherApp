@@ -27,7 +27,7 @@ export const OneDayTable = () => {
                 <tbody>
                     <tr>
                         {/* number of content columns */}
-                        {new Date().toLocaleString('en-US', { timeZone: weather.timeZone }).split('.')[0]}
+                        <td>{new Date().toLocaleString('en-US', { timeZone: weather.timeZone }).split('.')[0]}</td>
                         <td>{weather.name}</td>
                         <td>{weather.main.temp}</td>
                         <td>{weather.main.temp_min}</td>
