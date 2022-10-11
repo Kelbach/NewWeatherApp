@@ -1,8 +1,9 @@
 import './App.css';
 import React from 'react';
 import { SearchBar } from './components/SearchBar/SearchBar';
-import { OneDayTable } from './components/Table/oneDayTable';
-import { ForecastTable } from './components/Table/forecastTable';
+// import { OneDayTable } from './components/Table/oneDayTable';
+// import { ForecastTable } from './components/Table/forecastTable';
+import { OneDayCard } from './components/OneDayCard/OneDayCard';
 
 
 function App() {
@@ -15,24 +16,8 @@ function App() {
       </header>
       <main className="row">
           <SearchBar/>
-          <div className="col-8">
-              {/* <h2 id="dash-title"></h2> */}
-              <div className="row">
-                  <div id="current" className="col-6">
-                      
-                  </div>
-                  <div id="image" className="col-6">
-                      
-                  </div>
-              </div>
-              <div id="future" className="d-flex flex-row justify-space-around">
-                  
-              </div>
-          </div>
+          <OneDayCard/>
       </main>
-      
-      <OneDayTable/>
-      <ForecastTable/>
     </>
   );
 }

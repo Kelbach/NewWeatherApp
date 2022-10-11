@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import api from '../../utils/api';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { changeWeather } from '../../reducers/weatherReducer';
 import { changeForecast } from '../../reducers/forecastReducer';
 
@@ -9,7 +9,8 @@ export const SearchBar = () => {
     const apiKey = process.env.REACT_APP_API_KEY;
 
     const dispatch = useDispatch();
-    const citiesLoad = useSelector(store => store.cities.value);
+    const citiesLoad = JSON.parse(localStorage.getItem('cities')) || [];
+    // const citiesLoad = useSelector(store => store.cities.value);
     const [ errorMessage, setErrorMessage ] = useState('');
     const [ cities, setCities ] = useState(citiesLoad);
 
@@ -20,10 +21,33 @@ export const SearchBar = () => {
     }
 
     async function fetchCurrentWeather(city) {
-        const res = await api.getWeatherByCity(city,apiKey);
-        console.log(res.data);
-        dispatch(changeWeather(res.data));
-        fetchForecast(res.data.coord.lat, res.data.coord.lon);
+        try {
+            const res = await api.getWeatherByCity(city,apiKey);
+            console.log(res);
+
+            if (res.status>=200 && res.status < 300){
+                
+                dispatch(changeWeather(res.data));
+                fetchForecast(res.data.coord.lat, res.data.coord.lon);
+                let newCities = [...cities];
+
+                if ( !newCities.includes(city) ) {
+                    newCities.push(city)
+                    setCities(newCities);
+                }
+
+                localStorage.setItem('cities', JSON.stringify(newCities));
+
+            } else {
+
+                setErrorMessage("Something went wrong...");
+
+            }
+        } catch (err) {
+
+            setErrorMessage("ERROR: City Not Found");
+
+        }
     }
     
     function submitFormHandler(e) {
@@ -33,24 +57,20 @@ export const SearchBar = () => {
 
         if (!newCity) {
             
-            setErrorMessage('Please Enter a City')
+            setErrorMessage('Please Enter a City');
 
         } else {
 
-            let newCities = [...cities];
-
-            if ( !newCities.includes(newCity) ) {
-                newCities.push(newCity)
-                setCities(newCities);
-            }
-
-            console.log(newCities)
             fetchCurrentWeather(newCity);
             document.getElementById('city-search').value = '';
 
         }
     }
 
+    function clearCities() {
+        localStorage.removeItem('cities');
+        setCities([]);
+    }
     // function changeHandler(e){
     //     setErrorMessage('')
     //     if (e.target.name === '') {
@@ -69,16 +89,18 @@ export const SearchBar = () => {
                     <button type="submit" className="btn" id="btn" >Search</button>
                 </form>
                 {errorMessage && (
-                    <div className="alert alert-info text-center" role="alert">
+                    <div className="alert alert-danger text-center" role="alert">
                         <p className="error-text">{errorMessage}</p>
                     </div>
                 )}
             </div>
+            {cities[0] ? <button className="" onClick={clearCities}>Clear Searched Cities</button>: <></>}
             <div className="row flex-column" id="searched">
                 <ul>
                     {cities.map((city) => {
                         return (
-                            <li key={city} style={{listStyle: 'none'}}><button 
+                            <li key={city} style={{listStyle: 'none'}}>
+                                <button className="btn shadow-none"
                                     onClick={()=>{fetchCurrentWeather(city)}}>
                                         {city}
                                 </button>
